@@ -18,35 +18,41 @@ namespace UnitTestProject1
         [Test]
         public void TestMethod1()
         {
-            var rg = GenerateRandomGraph(1000, 2);
+            var rg = GenerateRandomGraph(500, 3);
 
-            TryFunc<TestVertex, IEnumerable<TestEdge>> qgsolver = rg.ShortestPathsDijkstra(x => x.GetCost(), rg.VerticesList[0]);
+            
             GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
-            PathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetPathFinder(rg.VerticesList[0]);
+            
             Random r = new Random();
             foreach (var v in rg.VerticesList)
             {
-                IEnumerable<TestEdge> qgresult;
-                bool qggot = qgsolver(v, out qgresult);
-                TestEdge[] sgresult;
-                bool sggot = sgsolver.TryGetPath(v, out sgresult);
-
-                if (v == sgsolver.Source) //quickgraph says no path from vertex to itself
+                PathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetPathFinder(v);
+                TryFunc<TestVertex, IEnumerable<TestEdge>> qgsolver = rg.ShortestPathsDijkstra(x => x.GetCost(), v);
+                foreach (var vt in rg.VerticesList)
                 {
-                    Assert.True(qggot == false && sggot == true);
-                    continue;
-                }
+                    IEnumerable<TestEdge> qgresult;
+                    bool qggot = qgsolver(vt, out qgresult);
+                    TestEdge[] sgresult;
+                    bool sggot = sgsolver.TryGetPath(vt, out sgresult);
 
-                Assert.True(qggot == sggot);
-                if (qggot)
-                {
-                    int i = 0;
-                    foreach (var item in qgresult)
+                    if (v == vt) //quickgraph???
                     {
-                        Assert.True(item == sgresult[i]);
-                        i++;
+                        //Assert.True(qggot == false && sggot == true);
+                        Assert.True(sggot && sgresult.Length == 0);
+                        continue;
                     }
-                    Assert.True(sgresult.Length == i);
+
+                    Assert.True(qggot == sggot);
+                    if (qggot)
+                    {
+                        int i = 0;
+                        foreach (var item in qgresult)
+                        {
+                            Assert.True(item == sgresult[i]);
+                            i++;
+                        }
+                        Assert.True(sgresult.Length == i);
+                    }
                 }
             }
         }

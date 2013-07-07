@@ -34,6 +34,7 @@ namespace UnitTestProject1
             v5.Out.Add(v4);
 
             PathFinder<TestVertex, TestEdge> pathfinder = gr.GetPathFinder(v1);
+            
 
             for (int i = 0; i < 2; i++)
             {
@@ -44,7 +45,60 @@ namespace UnitTestProject1
                 Assert.True(path[1].Target == v3);
                 Assert.True(path[2].Target == v4 || path[1].Target == v5);
                 Assert.True(path.Length == 3 || path.Length == 4);
+
+                PathFinder<TestVertex, TestEdge> pathfinder2 = gr.GetPathFinder(v2);
+
+                Assert.True(pathfinder2.TryGetPath(v4, out path));
+
+                Assert.True(path[0].Target==v3);
+                Assert.True(path[1].Target == v4 || path[1].Target == v5);
+                Assert.True(path.Length == 2 || path.Length == 3);
             }
+
+            
+        }    
+
+        [Test]
+        public void SourceIsDest()
+        {
+            IImplicitCostedGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
+
+            var gr = new GraphReader<TestVertex, TestEdge>(graph);
+
+            var v1 = new TestVertex(1);
+            var v2 = new TestVertex(2);
+            var v3 = new TestVertex(3);
+            var v5 = new TestVertex(5);
+            var v4 = new TestVertex(4);
+
+            v1.Out.Add(v2);
+            v2.Out.Add(v3);
+            v3.Out.Add(v4);
+            v3.Out.Add(v5);
+            v5.Out.Add(v4);
+
+            
+            
+
+            for (int i = 0; i < 2; i++)
+            {
+                TestEdge[] path;
+                PathFinder<TestVertex, TestEdge> pathfinder = gr.GetPathFinder(v1);
+                Assert.True(pathfinder.TryGetPath(v1, out path));
+                Assert.True(path.Length == 0);
+
+                pathfinder = gr.GetPathFinder(v2);
+                Assert.True(pathfinder.TryGetPath(v2, out path));
+                Assert.True(path.Length == 0);
+
+                pathfinder = gr.GetPathFinder(v3);
+                pathfinder.TryGetPath(v4, out path);
+
+                Assert.True(pathfinder.TryGetPath(v3, out path));
+                Assert.True(path.Length == 0);
+            }
+
+            
         }
     }
 

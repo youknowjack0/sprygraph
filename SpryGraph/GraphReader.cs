@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Alastri.SpryGraph
 {
@@ -25,11 +26,14 @@ namespace Alastri.SpryGraph
             get { return _source; }
         }
 
+
         public int VertexCount
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _vertices.Count; }            
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal VertexInternal<TVertex, TEdge> GetVertexInternal(TVertex v)
         {
             VertexInternal<TVertex, TEdge> vi;
@@ -57,16 +61,29 @@ namespace Alastri.SpryGraph
         private C5.IntervalHeap<KeyValuePair<double,VertexInternal<TVertex,TEdge>>> _unvisited = new C5.IntervalHeap<KeyValuePair<double, VertexInternal<TVertex, TEdge>>>(new KeyComparer<double, VertexInternal<TVertex, TEdge>>());
         private readonly List<Tuple<TEdge,int>> _precedent = new List<Tuple<TEdge, int>>();
         private readonly List<double> _costs = new List<double>();
+        private readonly List<bool> _visited = new List<bool>();
 
         internal PathFinder(GraphReader<TVertex, TEdge> graph, TVertex source, VertexInternal<TVertex,TEdge> sourceI)
         {
             _graph = graph;
             _source = source;
             _sourceI = sourceI;
-            _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(0, sourceI));
-            _costs.Add(0);
-            _precedent.Add(null);
-            Debug.Assert(sourceI.Id == 0);            
+
+            ExpandInternals();
+            _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(0, sourceI));            
+
+            _costs[_sourceI.Id] = 0;
+            _precedent[_sourceI.Id] = null;            
+        }
+
+        private void ExpandInternals()
+        {
+            while (_costs.Count < _graph.VertexCount)
+            {
+                _costs.Add(double.MaxValue);
+                _precedent.Add(null);
+                _visited.Add(false);
+            }
         }
 
         public TVertex Source { get { return _source; } }
@@ -76,11 +93,11 @@ namespace Alastri.SpryGraph
 
             var destVertex = _graph.GetVertexInternal(destination);
 
-            while (_costs.Count <= _graph.VertexCount)
-            {                
-                _costs.Add(double.MaxValue);
-                _precedent.Add(null);
-            }            
+            if (_costs.Count < _graph.VertexCount)
+            {
+                ExpandInternals();
+            }
+                        
 
             //todo: check if dest == src
             
@@ -90,13 +107,15 @@ namespace Alastri.SpryGraph
                 var v = kvp.Value;
                 var cost = kvp.Key;
 
-                if (_costs[v.Id] < cost) //this heap record is invalid (todo: equal cost is also invalid but wont work for the initialization)
+                if (_visited[v.Id])//this heap record is invalid
                     continue; 
                 else if (cost >= _costs[destVertex.Id]) //terminate
                 {
                     _unvisited.Add(kvp);                                     
                     break;
                 }
+
+                _visited[v.Id] = true;
 
                 foreach (var edge in v.GetOutEdges(_graph))
                 {
@@ -108,14 +127,15 @@ namespace Alastri.SpryGraph
                         Debug.Assert(targetId == _costs.Count);
                         _costs.Add(totalCost);
                         _precedent.Add(new Tuple<TEdge, int>(edge.UnderlyingEdge,v.Id));
+                        _visited.Add(false);
                         _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
                     } else if (totalCost < _costs[edge.Target.Id])
                     {
                         _costs[targetId] = totalCost;
                         _precedent[targetId] = new Tuple<TEdge, int>(edge.UnderlyingEdge, v.Id);
-                        _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
-                        
-                    }
+                        if (_visited[targetId] == false)
+                            _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
+                    }                                       
                 }
             }
 
@@ -156,6 +176,7 @@ namespace Alastri.SpryGraph
             _comparer = comparer ?? Comparer<TKey>.Default;
         }
 
+
         public int Compare(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y)
         {
             return _comparer.Compare(x.Key, y.Key);
@@ -169,15 +190,20 @@ namespace Alastri.SpryGraph
         private int _id;
 
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public VertexInternal(int id, TVertex vertex)
         {
             _id = id;
             _vertex = vertex;
         }
 
-        public int Id { get { return _id; } }
+        public int Id
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return _id; }
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EdgeInternal<TVertex,TEdge>[] GetOutEdges(GraphReader<TVertex,TEdge> graph )
         {
             if (_outEdges == null)
@@ -202,6 +228,7 @@ namespace Alastri.SpryGraph
         private readonly VertexInternal<TVertex, TEdge> _target;
         private readonly TEdge _underlyingEdge;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EdgeInternal(double cost, VertexInternal<TVertex, TEdge> target, TEdge underlyingEdge)
         {
             _cost = cost;
@@ -209,15 +236,21 @@ namespace Alastri.SpryGraph
             _underlyingEdge = underlyingEdge;
         }
 
-        public double Cost { get { return _cost; } }
+        public double Cost
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return _cost; }
+        }
 
         public VertexInternal<TVertex, TEdge> Target
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _target; }
         }
 
         public TEdge UnderlyingEdge
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _underlyingEdge; }
         }
     }
