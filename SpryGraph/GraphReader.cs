@@ -7,21 +7,22 @@ using System.Runtime.CompilerServices;
 namespace Alastri.SpryGraph
 {
     public sealed class GraphReader<TVertex, TEdge>
-        where TEdge : ICostedEdge<TVertex>
+        where TEdge : ICostedEdge<TVertex> 
+        where TVertex : IHeuristicVertex<TVertex>
     {
-        private readonly IImplicitCostedGraph<TVertex, TEdge> _source;
+        private readonly IImplicitCostedHeuristicGraph<TVertex, TEdge> _source;
 
         private readonly Dictionary<TVertex, VertexInternal<TVertex, TEdge>> _vertexMap = new Dictionary<TVertex, VertexInternal<TVertex, TEdge>>();
         private readonly List<VertexInternal<TVertex, TEdge>> _vertices = new List<VertexInternal<TVertex, TEdge>>(); 
 
-        public GraphReader(IImplicitCostedGraph<TVertex, TEdge> source)
+        public GraphReader(IImplicitCostedHeuristicGraph<TVertex, TEdge> source)
         {
             if (source == null)
                 throw new ArgumentNullException("source");
             _source = source;
         }
 
-        public IImplicitCostedGraph<TVertex, TEdge> Source
+        public IImplicitCostedHeuristicGraph<TVertex, TEdge> Source
         {
             get { return _source; }
         }
@@ -52,7 +53,7 @@ namespace Alastri.SpryGraph
         }        
     }
 
-    public sealed class PathFinder<TVertex, TEdge> where TEdge : ICostedEdge<TVertex>
+    public sealed class PathFinder<TVertex, TEdge> where TEdge : ICostedEdge<TVertex> where TVertex : IHeuristicVertex<TVertex>
 
     {
         private GraphReader<TVertex, TEdge> _graph;
@@ -183,7 +184,7 @@ namespace Alastri.SpryGraph
         }
     }
 
-    internal sealed class VertexInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex>
+    internal sealed class VertexInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex> where TVertex : IHeuristicVertex<TVertex>
     {
         private TVertex _vertex;
         private EdgeInternal<TVertex,TEdge>[] _outEdges;
@@ -222,7 +223,7 @@ namespace Alastri.SpryGraph
 
     }
 
-    internal sealed class EdgeInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex>
+    internal sealed class EdgeInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex> where TVertex : IHeuristicVertex<TVertex>
     {
         private readonly double _cost;        
         private readonly VertexInternal<TVertex, TEdge> _target;

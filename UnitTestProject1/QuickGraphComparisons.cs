@@ -87,7 +87,7 @@ namespace UnitTestProject1
         }
     }
 
-    public interface IHybridGraph : IVertexAndEdgeListGraph<TestVertex, TestEdge>, IImplicitCostedGraph<TestVertex, TestEdge>
+    public interface IHybridGraph : IVertexAndEdgeListGraph<TestVertex, TestEdge>, IImplicitCostedHeuristicGraph<TestVertex, TestEdge>
     {
         IList<TestVertex> VerticesList { get; }
     }

@@ -17,7 +17,7 @@ namespace UnitTestProject1
         [Test]
         public void TestMethod1()
         {
-            IImplicitCostedGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
+            IImplicitCostedHeuristicGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
 
             var gr = new GraphReader<TestVertex, TestEdge>(graph);
 
@@ -61,7 +61,7 @@ namespace UnitTestProject1
         [Test]
         public void SourceIsDest()
         {
-            IImplicitCostedGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
+            IImplicitCostedHeuristicGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
 
             var gr = new GraphReader<TestVertex, TestEdge>(graph);
 
@@ -220,7 +220,7 @@ namespace UnitTestProject1
         }
     }
 
-    public class TestVertex
+    public class TestVertex : IHeuristicVertex<TestVertex>
     {
         private int x;
 
@@ -254,6 +254,11 @@ namespace UnitTestProject1
                 }
                 return _outEdges;
             }
-        } 
+        }
+
+        public double Heuristic(TestVertex destination)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
