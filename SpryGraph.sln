@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Performance", "UnitTest.Performance\UnitTest.Performance.csproj", "{5D458C6A-5886-4D57-9BD7-22860B9F634A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastBinaryMinHeap", "FastBinaryMinHeap\FastBinaryMinHeap.csproj", "{3A8F7787-E73E-447E-87CA-FB6BEA1AD575}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{5D458C6A-5886-4D57-9BD7-22860B9F634A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D458C6A-5886-4D57-9BD7-22860B9F634A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D458C6A-5886-4D57-9BD7-22860B9F634A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A8F7787-E73E-447E-87CA-FB6BEA1AD575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A8F7787-E73E-447E-87CA-FB6BEA1AD575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A8F7787-E73E-447E-87CA-FB6BEA1AD575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A8F7787-E73E-447E-87CA-FB6BEA1AD575}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

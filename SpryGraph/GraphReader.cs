@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Alastri.DataStructures;
 
 namespace Alastri.SpryGraph
 {
@@ -58,10 +59,10 @@ namespace Alastri.SpryGraph
         private GraphReader<TVertex, TEdge> _graph;
         private readonly TVertex _source;
         private readonly VertexInternal<TVertex,TEdge> _sourceI;
-        private C5.IntervalHeap<KeyValuePair<double,VertexInternal<TVertex,TEdge>>> _unvisited = new C5.IntervalHeap<KeyValuePair<double, VertexInternal<TVertex, TEdge>>>(new KeyComparer<double, VertexInternal<TVertex, TEdge>>());
+        private MinHeap<VertexInternal<TVertex, TEdge>> _unvisited;
         private readonly List<Tuple<TEdge,int>> _precedent = new List<Tuple<TEdge, int>>();
         private readonly List<double> _costs = new List<double>();
-        private readonly List<bool> _visited = new List<bool>();
+        private readonly List<int> _heapIndex = new List<int>(); //-2 indicating unvisited and uninitialized, -1 indicating visited
 
         internal PathFinder(GraphReader<TVertex, TEdge> graph, TVertex source, VertexInternal<TVertex,TEdge> sourceI)
         {
@@ -70,7 +71,8 @@ namespace Alastri.SpryGraph
             _sourceI = sourceI;
 
             ExpandInternals();
-            _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(0, sourceI));            
+            _unvisited = new MinHeap<VertexInternal<TVertex, TEdge>>(graph.VertexCount);
+            _heapIndex[_sourceI.Id] = _unvisited.Add(0, sourceI);
 
             _costs[_sourceI.Id] = 0;
             _precedent[_sourceI.Id] = null;            
@@ -82,7 +84,7 @@ namespace Alastri.SpryGraph
             {
                 _costs.Add(double.MaxValue);
                 _precedent.Add(null);
-                _visited.Add(false);
+                _heapIndex.Add(-2);
             }
         }
 
@@ -103,19 +105,17 @@ namespace Alastri.SpryGraph
             
             while (_unvisited.Count > 0)
             {
-                var kvp = _unvisited.DeleteMin();
+                var kvp = _unvisited.RemoveMinimum();
                 var v = kvp.Value;
                 var cost = kvp.Key;
 
-                if (_visited[v.Id])//this heap record is invalid
-                    continue; 
-                else if (cost >= _costs[destVertex.Id]) //terminate
+                if (cost >= _costs[destVertex.Id]) //terminate
                 {
                     _unvisited.Add(kvp);                                     
                     break;
                 }
 
-                _visited[v.Id] = true;
+                _heapIndex[v.Id] = -1;
 
                 foreach (var edge in v.GetOutEdges(_graph))
                 {
@@ -127,14 +127,19 @@ namespace Alastri.SpryGraph
                         Debug.Assert(targetId == _costs.Count);
                         _costs.Add(totalCost);
                         _precedent.Add(new Tuple<TEdge, int>(edge.UnderlyingEdge,v.Id));
-                        _visited.Add(false);
-                        _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
-                    } else if (totalCost < _costs[edge.Target.Id])
+                        _heapIndex.Add(_unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target)));
+
+                    }
+                    else if (totalCost < _costs[targetId])
                     {
                         _costs[targetId] = totalCost;
                         _precedent[targetId] = new Tuple<TEdge, int>(edge.UnderlyingEdge, v.Id);
-                        if (_visited[targetId] == false)
+                        int heapIndex = _heapIndex[targetId];
+                        if (heapIndex == -2)
                             _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
+                        else if(heapIndex >= 0)
+                            _unvisited.DecreaseKey(heapIndex, totalCost);
+                        //else already visited
                     }                                       
                 }
             }
