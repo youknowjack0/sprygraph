@@ -226,6 +226,7 @@ namespace Alastri.DataStructures
             heapIndex = _count++;
             index = _index++;
             _heap[heapIndex] = new Entry(value, index);
+            _indices[index] = heapIndex;
             DecreateKeyInternal(key, heapIndex);
             return index;
         }

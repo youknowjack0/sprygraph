@@ -43,7 +43,7 @@ namespace UnitTestProject1
 
                 Assert.True(path[0].Target == v2);
                 Assert.True(path[1].Target == v3);
-                Assert.True(path[2].Target == v4 || path[1].Target == v5);
+                Assert.True(path[2].Target == v4 || path[2].Target == v5);
                 Assert.True(path.Length == 3 || path.Length == 4);
 
                 PathFinder<TestVertex, TestEdge> pathfinder2 = gr.GetPathFinder(v2);

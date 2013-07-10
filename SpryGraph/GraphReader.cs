@@ -137,7 +137,7 @@ namespace Alastri.SpryGraph
                         int heapIndex = _heapIndex[targetId];
                         if (heapIndex == -2)
                             _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
-                        else if(heapIndex >= 0)
+                        else if(heapIndex >= 0)                            
                             _unvisited.DecreaseKey(heapIndex, totalCost);
                         //else already visited
                     }                                       
