@@ -43,8 +43,7 @@ namespace Alastri.DataStructures
     /// 
     /// adding an item returns an integer index which can be used to retrieve or decrease-key 
     /// (even if the position has changed)
-    /// To do this it keeps a list of all items ever inserted into the heap. Use TrimExcess() to clear up this list
-    /// and the extra array empty space
+    /// To do this it keeps a list of all items ever inserted into the heap.
     /// </summary>
     public sealed class MinHeap<TValue>
     {
@@ -184,6 +183,7 @@ namespace Alastri.DataStructures
             } 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Swap(int x, int y)
         {
             var t = _heap[x];

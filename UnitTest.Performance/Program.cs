@@ -16,7 +16,7 @@ namespace UnitTest.Performance
         static void Main(string[] args)
         {
 
-            var rg = QuickGraphComparisons.GenerateRandomGraph(3000, 2);
+            var rg = QuickGraphComparisons.GenerateRandomGraph(3000, 6);
             Random r = new Random();
             
             var sw = new Stopwatch();
@@ -55,10 +55,10 @@ namespace UnitTest.Performance
             }
             sw.Stop();
             Console.WriteLine("Quickgraph took " + sw.ElapsedMilliseconds);
-
             */
+            
 
-            int coldcalls = 1000;
+            int coldcalls = 10000;
 
             List<TestVertex> randomSources = new List<TestVertex>(coldcalls);
             List<TestVertex> randomDestinations = new List<TestVertex>(coldcalls);
@@ -82,7 +82,7 @@ namespace UnitTest.Performance
             }
             sw.Stop();
             Console.WriteLine("Sprygraph cold-query time: " + (double)sw.ElapsedMilliseconds/(coldcalls));
-
+            
             sw.Restart();
             {
                 GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
@@ -98,6 +98,7 @@ namespace UnitTest.Performance
             }
             sw.Stop();
             Console.WriteLine("Quickgraph cold-query time: " + (double)sw.ElapsedMilliseconds / (coldcalls));
+            
         }
     }
 }

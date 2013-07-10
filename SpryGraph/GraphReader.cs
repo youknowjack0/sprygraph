@@ -78,6 +78,7 @@ namespace Alastri.SpryGraph
             _precedent[_sourceI.Id] = null;            
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExpandInternals()
         {
             while (_costs.Count < _graph.VertexCount)
@@ -201,6 +202,7 @@ namespace Alastri.SpryGraph
             _id = id;
             _vertex = vertex;
         }
+
 
         public int Id
         {
