@@ -202,13 +202,12 @@ namespace Alastri.DataStructures
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DecreateKeyInternal(double newKey, int heapIndex)
-        {
-            double key;
-            if (newKey > (key = _heap[heapIndex].Key))
+        {            
+            if (newKey > _heap[heapIndex].Key)
                 throw new InvalidOperationException("new key is higher than old key");
             int parent;
             _heap[heapIndex].Key = newKey;
-            while (heapIndex > 0 && _heap[(parent = Parent(heapIndex))].Key > key)
+            while (heapIndex > 0 && _heap[(parent = Parent(heapIndex))].Key > _heap[heapIndex].Key)
             {
                 Swap(heapIndex, parent);
                 heapIndex = parent;
@@ -224,7 +223,9 @@ namespace Alastri.DataStructures
                 ExpandHeap();
             if (_index == _indices.Length)
                 ExpandIndices();
-            _heap[(heapIndex=_count++)] = new Entry(value, (index = _index++));
+            heapIndex = _count++;
+            index = _index++;
+            _heap[heapIndex] = new Entry(value, index);
             DecreateKeyInternal(key, heapIndex);
             return index;
         }
