@@ -45,11 +45,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AStarPathFinder.cs" />
     <Compile Include="EdgeInternal.cs" />
     <Compile Include="GraphReader.cs" />
     <Compile Include="IImplicitGraph.cs" />
     <Compile Include="IPathFinder.cs" />
     <Compile Include="DijkstraPathFinder.cs" />
+    <Compile Include="PathFinderBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VertexInternal.cs" />
   </ItemGroup>

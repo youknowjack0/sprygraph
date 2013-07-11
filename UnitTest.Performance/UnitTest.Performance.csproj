@@ -56,9 +56,9 @@
       <Project>{9E241436-FD49-482D-8B11-D0409F0B9734}</Project>
       <Name>SpryGraph</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UnitTestProject1\ComparisonTests.csproj">
+    <ProjectReference Include="..\UnitTestProject1\UnitTests.Comparison.csproj">
       <Project>{4e444999-bbc6-4391-aa33-6f2e5a2b184d}</Project>
-      <Name>ComparisonTests</Name>
+      <Name>UnitTests.Comparison</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpryGraph", "SpryGraph\SpryGraph.csproj", "{9E241436-FD49-482D-8B11-D0409F0B9734}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComparisonTests", "UnitTestProject1\ComparisonTests.csproj", "{4E444999-BBC6-4391-AA33-6F2E5A2B184D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Comparison", "UnitTestProject1\UnitTests.Comparison.csproj", "{4E444999-BBC6-4391-AA33-6F2E5A2B184D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4A30EB5D-B5BF-4024-A7CE-D3C65B23B340}"
 	ProjectSection(SolutionItems) = preProject
@@ -42,8 +42,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

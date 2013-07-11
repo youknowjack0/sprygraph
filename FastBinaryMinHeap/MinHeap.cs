@@ -29,6 +29,7 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -45,7 +46,7 @@ namespace Alastri.DataStructures
     /// (even if the position has changed)
     /// To do this it keeps a list of all items ever inserted into the heap.
     /// </summary>
-    public sealed class MinHeap<TValue>
+    public sealed class MinHeap<TValue> : IEnumerable<TValue>
     {
         private struct Entry
         {
@@ -73,6 +74,7 @@ namespace Alastri.DataStructures
         private int _index = 0;
         private int[] _indices;
 
+
         public MinHeap(int initSize = 4)
         {
             _heap = new Entry[initSize];
@@ -81,11 +83,7 @@ namespace Alastri.DataStructures
 
         public int Count
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return _count;
-            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return _count; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -159,10 +157,10 @@ namespace Alastri.DataStructures
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void MinHeapify(int i)
         {
-            for (; ; )
+            for (;;)
             {
                 int l = Left(i);
                 int r = Right(i);
@@ -177,10 +175,10 @@ namespace Alastri.DataStructures
 
                 if (smallest == i)
                     return;
-                
+
                 Swap(i, smallest);
                 i = smallest;
-            } 
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,7 +200,7 @@ namespace Alastri.DataStructures
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DecreateKeyInternal(double newKey, int heapIndex)
-        {            
+        {
             if (newKey > _heap[heapIndex].Key)
                 throw new InvalidOperationException("new key is higher than old key");
             int parent;
@@ -219,7 +217,7 @@ namespace Alastri.DataStructures
         {
             int index;
             int heapIndex;
-            if(_count == _heap.Length)
+            if (_count == _heap.Length)
                 ExpandHeap();
             if (_index == _indices.Length)
                 ExpandIndices();
@@ -241,10 +239,10 @@ namespace Alastri.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ExpandHeap()
         {
-            if(_heap.Length == 0)
+            if (_heap.Length == 0)
                 Array.Resize(ref _heap, 4);
-            else 
-                Array.Resize(ref _heap, _heap.Length * 2);
+            else
+                Array.Resize(ref _heap, _heap.Length*2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -253,8 +251,66 @@ namespace Alastri.DataStructures
             if (_indices.Length == 0)
                 Array.Resize(ref _indices, 4);
             else
-                Array.Resize(ref _indices, _indices.Length * 2);
+                Array.Resize(ref _indices, _indices.Length*2);
         }
 
+        public IEnumerator<TValue> GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        private sealed class Enumerator : IEnumerator<TValue>
+        {
+            private readonly MinHeap<TValue> _heap;
+            private int _index=-1;
+            private TValue _current;
+
+            public Enumerator(MinHeap<TValue> heap)
+            {
+                _heap = heap;
+            }
+
+            public void Dispose()
+            {
+
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+                if (++_index < _heap._count)
+                {
+                    _current = _heap._heap[_index].Value;
+                    return true;
+                }
+                else
+                    return false;
+
+            }
+
+            public void Reset()
+            {
+                _index = -1;
+            }
+
+
+            public TValue Current
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+                get { return _current; }
+            }
+
+
+            object IEnumerator.Current
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+                get { return Current; }
+            }
+        }
     }
 }

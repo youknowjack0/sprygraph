@@ -16,7 +16,7 @@ namespace UnitTest.Performance
         static void Main(string[] args)
         {
 
-            var rg = QuickGraphComparisons.GenerateRandomGraph(4000, 2);
+            var rg = QuickGraphComparisons.GenerateRandomGraph(2000, 2);
             Random r = new Random();
             
             var sw = new Stopwatch();
@@ -75,7 +75,7 @@ namespace UnitTest.Performance
                 {
                     var source = randomSources[index];
                     var destination = randomDestinations[index];                    
-                    DijkstraPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetPathFinder(source);
+                    DijkstraPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetDijkstraPathFinder(source);
                     TestEdge[] sgresult;
                     bool sggot = sgsolver.TryGetPath(destination, out sgresult);
                 }
@@ -84,8 +84,7 @@ namespace UnitTest.Performance
             Console.WriteLine("Sprygraph cold-query Dijkstra time: " + (double)sw.ElapsedMilliseconds/(coldcalls));
             
             sw.Restart();
-            {
-                GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
+            {                
                 for (int index = 0; index < randomSources.Count; index++)
                 {
                     var source = randomSources[index];
@@ -98,7 +97,37 @@ namespace UnitTest.Performance
             }
             sw.Stop();
             Console.WriteLine("Quickgraph cold-query Dijkstra time: " + (double)sw.ElapsedMilliseconds / (coldcalls));
-            
+
+
+            sw.Restart();
+            {
+                var sgreader = new GraphReader<TestVertex, TestEdge>(rg);
+                for (int index = 0; index < randomSources.Count; index++)
+                {
+                    var source = randomSources[index];
+                    var destination = randomDestinations[index];
+                    AStarPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetAStarPathFinder(source);
+                    TestEdge[] sgresult;
+                    bool sggot = sgsolver.TryGetPath(destination, out sgresult);
+                }
+            }
+            sw.Stop();
+            Console.WriteLine("Sprygraph cold-query A* time: " + (double)sw.ElapsedMilliseconds / (coldcalls));
+
+            sw.Restart();
+            {                
+                for (int index = 0; index < randomSources.Count; index++)
+                {
+                    var source = randomSources[index];
+                    var destination = randomDestinations[index];
+                    TryFunc<TestVertex, IEnumerable<TestEdge>> qgsolver = rg.ShortestPathsAStar (x => x.GetCost(), x => x.Heuristic(destination),
+                                                                                                   source);
+                    IEnumerable<TestEdge> qgresult;
+                    bool qggot = qgsolver(destination, out qgresult);
+                }
+            }
+            sw.Stop();
+            Console.WriteLine("Quickgraph cold-query A* time: " + (double)sw.ElapsedMilliseconds / (coldcalls));
         }
     }
 }

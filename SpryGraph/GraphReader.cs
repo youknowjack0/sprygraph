@@ -51,9 +51,14 @@ namespace Alastri.SpryGraph
             return vi;
         } 
 
-        public DijkstraPathFinder<TVertex, TEdge> GetPathFinder(TVertex from)
+        public DijkstraPathFinder<TVertex, TEdge> GetDijkstraPathFinder(TVertex from)
         {
             return new DijkstraPathFinder<TVertex, TEdge>(this, from, GetVertexInternal(from) );
-        }        
+        }
+
+        public AStarPathFinder<TVertex, TEdge> GetAStarPathFinder(TVertex from)
+        {
+            return new AStarPathFinder<TVertex, TEdge>(this, from, GetVertexInternal(from));
+        }
     }
 }

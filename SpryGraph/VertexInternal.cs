@@ -2,7 +2,7 @@
 
 namespace Alastri.SpryGraph
 {
-    internal sealed class VertexInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex> where TVertex : IHeuristicVertex<TVertex>
+    public sealed class VertexInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex> where TVertex : IHeuristicVertex<TVertex>
     {
         private TVertex _vertex;
         private EdgeInternal<TVertex,TEdge>[] _outEdges;
@@ -10,21 +10,27 @@ namespace Alastri.SpryGraph
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public VertexInternal(int id, TVertex vertex)
+        internal VertexInternal(int id, TVertex vertex)
         {
             _id = id;
             _vertex = vertex;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal double Heuristic(VertexInternal<TVertex,TEdge> destination)
+        {
+            return _vertex.Heuristic(destination._vertex);
+        }
 
-        public int Id
+
+        internal int Id
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _id; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EdgeInternal<TVertex,TEdge>[] GetOutEdges(GraphReader<TVertex,TEdge> graph )
+        internal EdgeInternal<TVertex, TEdge>[] GetOutEdges(GraphReader<TVertex, TEdge> graph)
         {
             if (_outEdges == null)
             {
