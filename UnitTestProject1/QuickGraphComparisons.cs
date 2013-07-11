@@ -26,7 +26,7 @@ namespace UnitTestProject1
             Random r = new Random();
             foreach (var v in rg.VerticesList)
             {
-                PathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetPathFinder(v);
+                DijkstraPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetPathFinder(v);
                 TryFunc<TestVertex, IEnumerable<TestEdge>> qgsolver = rg.ShortestPathsDijkstra(x => x.GetCost(), v);
                 foreach (var vt in rg.VerticesList)
                 {
