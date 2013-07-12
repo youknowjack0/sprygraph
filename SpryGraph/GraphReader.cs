@@ -14,19 +14,19 @@ namespace Alastri.SpryGraph
         where TEdge : ICostedEdge<TVertex> 
         where TVertex : IHeuristicVertex<TVertex>
     {
-        private readonly IImplicitCostedHeuristicGraph<TVertex, TEdge> _source;
+        private readonly IGraph<TVertex, TEdge> _source;
 
         private readonly Dictionary<TVertex, VertexInternal<TVertex, TEdge>> _vertexMap = new Dictionary<TVertex, VertexInternal<TVertex, TEdge>>();
-        private readonly List<VertexInternal<TVertex, TEdge>> _vertices = new List<VertexInternal<TVertex, TEdge>>(); 
+        private readonly List<VertexInternal<TVertex, TEdge>> _vertices = new List<VertexInternal<TVertex, TEdge>>();
 
-        public GraphReader(IImplicitCostedHeuristicGraph<TVertex, TEdge> source)
+        public GraphReader(IGraph<TVertex, TEdge> source)
         {
             if (source == null)
                 throw new ArgumentNullException("source");
             _source = source;
         }
 
-        public IImplicitCostedHeuristicGraph<TVertex, TEdge> Source
+        public IGraph<TVertex, TEdge> Source
         {
             get { return _source; }
         }
@@ -59,6 +59,19 @@ namespace Alastri.SpryGraph
         public AStarPathFinder<TVertex, TEdge> GetAStarPathFinder(TVertex from)
         {
             return new AStarPathFinder<TVertex, TEdge>(this, from, GetVertexInternal(from));
+        }
+
+        /// <summary>
+        /// Use this to read the whole graph
+        /// 
+        /// necessary to use this if you want ot use the GraphReader in a multi-threaded environment
+        /// </summary>
+        public void ReadAll()
+        {
+            foreach (var vertex in _source.Vertices)
+            {
+                this.GetVertexInternal(vertex).GetOutEdges(this);
+            }
         }
     }
 }
