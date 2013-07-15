@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Alastri.SpryGraph
@@ -14,19 +13,19 @@ namespace Alastri.SpryGraph
         where TEdge : ICostedEdge<TVertex> 
         where TVertex : IHeuristicVertex<TVertex>
     {
-        private readonly IGraph<TVertex, TEdge> _source;
+        private readonly IMinimalPathFindingGraph<TVertex, TEdge> _source;
 
         private readonly Dictionary<TVertex, VertexInternal<TVertex, TEdge>> _vertexMap = new Dictionary<TVertex, VertexInternal<TVertex, TEdge>>();
         private readonly List<VertexInternal<TVertex, TEdge>> _vertices = new List<VertexInternal<TVertex, TEdge>>();
 
-        public GraphReader(IGraph<TVertex, TEdge> source)
+        public GraphReader(IMinimalPathFindingGraph<TVertex, TEdge> source)
         {
             if (source == null)
                 throw new ArgumentNullException("source");
             _source = source;
         }
 
-        public IGraph<TVertex, TEdge> Source
+        public IMinimalPathFindingGraph<TVertex, TEdge> Source
         {
             get { return _source; }
         }
@@ -66,11 +65,11 @@ namespace Alastri.SpryGraph
         /// 
         /// necessary to use this if you want ot use the GraphReader in a multi-threaded environment
         /// </summary>
-        public void ReadAll()
+        public void ReadAll(IEnumerable<TVertex> vertices )
         {
-            foreach (var vertex in _source.Vertices)
+            foreach (var vertex in vertices)
             {
-                this.GetVertexInternal(vertex).GetOutEdges(this);
+                GetVertexInternal(vertex).GetOutEdges(this);
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Alastri.SpryGraph;
 using NUnit.Framework;
@@ -16,9 +15,6 @@ namespace UnitTestProject1
     [TestFixture]
     public class QuickGraphComparisons
     {
-        private double _sglen;
-        private double _qglen;
-
         [Test]
         public void Dijkstra()
         {
@@ -27,7 +23,6 @@ namespace UnitTestProject1
 
             GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
 
-            Random r = new Random();
             foreach (var v in rg.VerticesList)
             {
                 DijkstraPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetDijkstraPathFinder(v);
@@ -69,7 +64,6 @@ namespace UnitTestProject1
 
             GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
 
-            Random r = new Random();
             foreach (var v in rg.VerticesList)
             {
                 AStarPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetAStarPathFinder(v);
@@ -92,8 +86,8 @@ namespace UnitTestProject1
                     if (qggot && sggot)
                     {
                          qgresultarray = qgresult as TestEdge[] ?? qgresult.ToArray();
-                        _qglen = qgresultarray.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
-                        _sglen = sgresult.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
+                        qgresultarray.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
+                        sgresult.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
 
                     }
                     Assert.True(qggot == sggot);
@@ -119,7 +113,6 @@ namespace UnitTestProject1
 
             GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
 
-            Random r = new Random();
             foreach (var v in rg.VerticesList)
             {
                 AStarPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetAStarPathFinder(v);
@@ -142,8 +135,8 @@ namespace UnitTestProject1
                     if (qggot && sggot)
                     {
                         qgresultarray = qgresult as TestEdge[] ?? qgresult.ToArray();
-                        _qglen = qgresultarray.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
-                        _sglen = sgresult.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
+                        qgresultarray.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
+                        sgresult.Aggregate(0.0, (sum, edge) => sum + edge.GetCost());
 
                     }
                     Assert.True(qggot == sggot);
@@ -188,10 +181,7 @@ namespace UnitTestProject1
                     
                 }
                 var x = item.OutEdges; //called for effect
-                foreach (var e in x)
-                {
-                    el.Add(e);
-                }
+                el.AddRange(x);
             }
 
             return new TestGraph(vl, el);
@@ -202,15 +192,17 @@ namespace UnitTestProject1
         /// </summary>        
         public  static IHybridGraph GenerateRandomGraph2(int sideCount)
         {
-            directions = new List<int[]>();
-            directions.Add(new int[]{0,1});
-            directions.Add(new int[] { 0, -1 });
-            directions.Add(new int[] { 1, 0 });
-            directions.Add(new int[] { -1, 0 });
-            directions.Add(new int[] { 1, 1 });
-            directions.Add(new int[] { -1, 1 });
-            directions.Add(new int[] { 1, -1 });
-            directions.Add(new int[] { -1, -1 });
+            _directions = new List<int[]>
+                {
+                    new[] { 0,  1},
+                    new[] { 0, -1},
+                    new[] { 1,  0},
+                    new[] {-1,  0},
+                    new[] { 1,  1},
+                    new[] {-1,  1},
+                    new[] { 1, -1},
+                    new[] {-1, -1}
+                };
             var vl = new List<TestVertex>();
             var el = new List<TestEdge>();
 
@@ -237,12 +229,9 @@ namespace UnitTestProject1
                 {
                     var v = matrix[i,j];
                     var @out = v.Out;
-                    ConnectRandomly(v, matrix, i, j, r, @out);
+                    ConnectRandomly(matrix, i, j, r, @out);
                     var x = v.OutEdges; //called for effect
-                    foreach (var e in x)
-                    {
-                        el.Add(e);
-                    }
+                    el.AddRange(x);
                 }
                 
             }
@@ -250,22 +239,15 @@ namespace UnitTestProject1
             return new TestGraph(vl, el);
         }
 
-        private static List<int[]> directions; 
+        private static List<int[]> _directions; 
 
-        private static void ConnectRandomly(TestVertex testVertex, TestVertex[,] matrix, int i, int j, Random r, List<TestVertex> outEdges)
+        private static void ConnectRandomly(TestVertex[,] matrix, int i, int j, Random r, List<TestVertex> outEdges)
         {
-            foreach (var item in directions)
-            {
-                if (r.NextDouble() > 0.5)
-                {
-                    var v = matrix[i + item[0], j + item[1]];
-                    outEdges.Add(v);
-                }
-            }
+            outEdges.AddRange(from item in _directions where r.NextDouble() > 0.5 select matrix[i + item[0], j + item[1]]);
         }
     }
 
-    public interface IHybridGraph : IVertexAndEdgeListGraph<TestVertex, TestEdge>, IImplicitCostedHeuristicGraph<TestVertex, TestEdge>
+    public interface IHybridGraph : IVertexAndEdgeListGraph<TestVertex, TestEdge>, IMinimalPathFindingGraph<TestVertex, TestEdge>
     {
         IList<TestVertex> VerticesList { get; }
     }

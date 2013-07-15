@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpryGraph", "SpryGraph\SpryGraph.csproj", "{9E241436-FD49-482D-8B11-D0409F0B9734}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Comparison", "UnitTestProject1\UnitTests.Comparison.csproj", "{4E444999-BBC6-4391-AA33-6F2E5A2B184D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Comparison", "Test.Comparison\Test.Comparison.csproj", "{4E444999-BBC6-4391-AA33-6F2E5A2B184D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4A30EB5D-B5BF-4024-A7CE-D3C65B23B340}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Performance", "UnitTest.Performance\UnitTest.Performance.csproj", "{5D458C6A-5886-4D57-9BD7-22860B9F634A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Performance", "Test.Performance\Test.Performance.csproj", "{5D458C6A-5886-4D57-9BD7-22860B9F634A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastBinaryMinHeap", "FastBinaryMinHeap\FastBinaryMinHeap.csproj", "{3A8F7787-E73E-447E-87CA-FB6BEA1AD575}"
 EndProject

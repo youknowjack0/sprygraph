@@ -9,52 +9,52 @@ namespace Alastri.SpryGraph
         where TEdge : ICostedEdge<TVertex>
         where TVertex : IHeuristicVertex<TVertex>
     {
-        public TVertex Source { get { return _source; } }
+        public TVertex Source { get { return SourceVertex; } }
         public abstract bool TryGetPath(TVertex destination, out TEdge[] path);
 
-        protected GraphReader<TVertex, TEdge> _graph;
-        protected readonly TVertex _source;
-        protected readonly VertexInternal<TVertex,TEdge> _sourceI;
-        protected MinHeap<VertexInternal<TVertex, TEdge>> _unvisited;
-        protected  Tuple<TEdge, int>[] _precedent;
-        protected  double[] _costs ;
-        protected  int[] _heapIndex ; //-2 indicating unvisited and uninitialized, -1 indicating visited
+        protected GraphReader<TVertex, TEdge> Graph;
+        protected readonly TVertex SourceVertex;
+        protected readonly VertexInternal<TVertex,TEdge> SourceI;
+        protected MinHeap<VertexInternal<TVertex, TEdge>> Unvisited;
+        protected  Tuple<TEdge, int>[] Precedent;
+        protected  double[] Costs ;
+        protected  int[] HeapIndex ; //-2 indicating unvisited and uninitialized, -1 indicating visited
         
-        protected int _vCount;
+        protected int VCount;
 
         internal PathFinderBase(GraphReader<TVertex, TEdge> graph, TVertex source, VertexInternal<TVertex, TEdge> sourceI)
         {
-            _graph = graph;
-            _source = source;
-            _sourceI = sourceI;
+            Graph = graph;
+            SourceVertex = source;
+            SourceI = sourceI;
 
             InitializeInternals();
 
             
 
-            _costs[_sourceI.Id] = 0;
-            _precedent[_sourceI.Id] = null;            
+            Costs[SourceI.Id] = 0;
+            Precedent[SourceI.Id] = null;            
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void InitializeInternals()
         {
             
-            if (_costs == null)
+            if (Costs == null)
             {
-                int size = _graph.VertexCount < 32 ? 32 : _graph.VertexCount;
-                _costs = new double[size];
-                _heapIndex = new int[size];
-                _precedent = new Tuple<TEdge, int>[size];
+                int size = Graph.VertexCount < 32 ? 32 : Graph.VertexCount;
+                Costs = new double[size];
+                HeapIndex = new int[size];
+                Precedent = new Tuple<TEdge, int>[size];
             } 
             
             ExpandInternals();
 
-            for (; _vCount < _graph.VertexCount;_vCount++ )
+            for (; VCount < Graph.VertexCount;VCount++ )
             {
-                _costs[_vCount] = (double.MaxValue);
-                _precedent[_vCount] = null;
-                _heapIndex[_vCount] = -2;
+                Costs[VCount] = (double.MaxValue);
+                Precedent[VCount] = null;
+                HeapIndex[VCount] = -2;
 
             }
         }
@@ -62,24 +62,24 @@ namespace Alastri.SpryGraph
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ExpandInternals()
         {
-            if (_graph.VertexCount >= _costs.Length)
+            if (Graph.VertexCount >= Costs.Length)
             {
-                Array.Resize(ref _costs, _costs.Length*2);
-                Array.Resize(ref _heapIndex, _heapIndex.Length * 2);
-                Array.Resize(ref _precedent, _precedent.Length * 2);
+                Array.Resize(ref Costs, Costs.Length*2);
+                Array.Resize(ref HeapIndex, HeapIndex.Length * 2);
+                Array.Resize(ref Precedent, Precedent.Length * 2);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void UpdateVertexCost(double totalCost, EdgeInternal<TVertex, TEdge> edge, VertexInternal<TVertex, TEdge> v)
         {
-            _costs[edge.Target.Id] = totalCost;
-            _precedent[edge.Target.Id] = new Tuple<TEdge, int>(edge.UnderlyingEdge, v.Id);
-            int heapIndex = _heapIndex[edge.Target.Id];
+            Costs[edge.Target.Id] = totalCost;
+            Precedent[edge.Target.Id] = new Tuple<TEdge, int>(edge.UnderlyingEdge, v.Id);
+            int heapIndex = HeapIndex[edge.Target.Id];
             if (heapIndex == -2)
-                _unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
+                Unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target));
             else if (heapIndex >= 0)
-                _unvisited.DecreaseKey(heapIndex, totalCost);
+                Unvisited.DecreaseKey(heapIndex, totalCost);
             //else already visited
         }
 
@@ -87,10 +87,10 @@ namespace Alastri.SpryGraph
         protected void AddNewlyFoundVertex(double totalCost, EdgeInternal<TVertex, TEdge> edge, VertexInternal<TVertex, TEdge> v)
         {
             ExpandInternals();
-            _costs[_vCount] = (totalCost);
-            _precedent[_vCount] = (new Tuple<TEdge, int>(edge.UnderlyingEdge, v.Id));
-            _heapIndex[_vCount] = (_unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target)));
-            _vCount++;
+            Costs[VCount] = (totalCost);
+            Precedent[VCount] = (new Tuple<TEdge, int>(edge.UnderlyingEdge, v.Id));
+            HeapIndex[VCount] = (Unvisited.Add(new KeyValuePair<double, VertexInternal<TVertex, TEdge>>(totalCost, edge.Target)));
+            VCount++;
         }
 
 
@@ -99,9 +99,9 @@ namespace Alastri.SpryGraph
         {
             List<TEdge> ps = new List<TEdge>();
 
-            for (Tuple<TEdge, int> precedent = _precedent[destVertex.Id];
+            for (Tuple<TEdge, int> precedent = Precedent[destVertex.Id];
                  precedent != null;
-                 precedent = _precedent[precedent.Item2])
+                 precedent = Precedent[precedent.Item2])
             {
                 ps.Add(precedent.Item1);
             }

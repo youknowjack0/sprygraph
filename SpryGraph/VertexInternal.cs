@@ -4,9 +4,9 @@ namespace Alastri.SpryGraph
 {
     public sealed class VertexInternal<TVertex, TEdge> where TEdge : ICostedEdge<TVertex> where TVertex : IHeuristicVertex<TVertex>
     {
-        private TVertex _vertex;
+        private readonly TVertex _vertex;
         private EdgeInternal<TVertex,TEdge>[] _outEdges;
-        private int _id;
+        private readonly int _id;
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

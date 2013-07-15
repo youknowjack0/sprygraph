@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Alastri.SpryGraph;
 using QuickGraph;
 using QuickGraph.Algorithms;
@@ -13,13 +10,13 @@ namespace UnitTest.Performance
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {            
             
 
             BasicDijkstra();
             
-            int coldcalls = 10;
+            const int coldcalls = 10;
 
             Coldcalls(coldcalls);
 
@@ -31,7 +28,6 @@ namespace UnitTest.Performance
 
             var sw = new Stopwatch();
             var rg = QuickGraphComparisons.GenerateRandomGraph(2000, 2);
-            Random r = new Random();
             sw.Restart();
             {
                 GraphReader<TestVertex, TestEdge> sgreader = new GraphReader<TestVertex, TestEdge>(rg);
@@ -42,7 +38,7 @@ namespace UnitTest.Performance
                     foreach (var v in rg.VerticesList)
                     {
                         TestEdge[] sgresult;
-                        bool sggot = sgsolver.TryGetPath(v, out sgresult);
+                        sgsolver.TryGetPath(v, out sgresult);
                     }
                 }
             }
@@ -58,7 +54,7 @@ namespace UnitTest.Performance
                     foreach (var v in rg.VerticesList)
                     {
                         IEnumerable<TestEdge> qgresult;
-                        bool qggot = qgsolver(v, out qgresult);
+                        qgsolver(v, out qgresult);
                     }
                 }
             }
@@ -66,7 +62,7 @@ namespace UnitTest.Performance
             Console.WriteLine("Quickgraph took " + sw.ElapsedMilliseconds);
         }
 
-        private static int Coldcalls(int coldcalls)
+        private static void Coldcalls(int coldcalls)
         {
             var sw = new Stopwatch();
             var rg = QuickGraphComparisons.GenerateRandomGraph(200000, 2);
@@ -89,7 +85,7 @@ namespace UnitTest.Performance
                     var destination = randomDestinations[index];
                     DijkstraPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetDijkstraPathFinder(source);
                     TestEdge[] sgresult;
-                    bool sggot = sgsolver.TryGetPath(destination, out sgresult);
+                    sgsolver.TryGetPath(destination, out sgresult);
                 }
             }
             sw.Stop();
@@ -104,12 +100,11 @@ namespace UnitTest.Performance
                     TryFunc<TestVertex, IEnumerable<TestEdge>> qgsolver = rg.ShortestPathsDijkstra(x => x.GetCost(),
                                                                                                    source);
                     IEnumerable<TestEdge> qgresult;
-                    bool qggot = qgsolver(destination, out qgresult);
+                    qgsolver(destination, out qgresult);
                 }
             }
             sw.Stop();
             Console.WriteLine("Quickgraph cold-query Dijkstra time: " + (double) sw.ElapsedMilliseconds/(coldcalls));
-            return coldcalls;
         }
 
         private static void Spatial(int coldcalls)
@@ -135,7 +130,7 @@ namespace UnitTest.Performance
                     var destination = randomDestinations[index];
                     AStarPathFinder<TestVertex, TestEdge> sgsolver = sgreader.GetAStarPathFinder(source);
                     TestEdge[] sgresult;
-                    bool sggot = sgsolver.TryGetPath(destination, out sgresult);
+                    sgsolver.TryGetPath(destination, out sgresult);
                 }
             }
             sw.Stop();
@@ -151,7 +146,7 @@ namespace UnitTest.Performance
                                                                                                  x => x.Heuristic(destination),
                                                                                                  source);
                     IEnumerable<TestEdge> qgresult;
-                    bool qggot = qgsolver(destination, out qgresult);
+                    qgsolver(destination, out qgresult);
                 }
             }
             sw.Stop();

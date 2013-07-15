@@ -6,27 +6,27 @@ namespace UnitTestProject1
 {
     public class TestVertex : IHeuristicVertex<TestVertex>
     {
-        private double x;        
+        private double _x;        
 
         public TestVertex(double x, double y, double z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            _x = x;
+            _y = y;
+            _z = z;
         }
 
         public double X
         {
-            get { return x; }
-            set { x = value; }
+            get { return _x; }
+            set { _x = value; }
         }
 
         public List<TestVertex> Out { get { return _out; } }
 
         readonly List<TestVertex> _out = new List<TestVertex>();
         private List<TestEdge> _outEdges;
-        private double y;
-        private double z;
+        private readonly double _y;
+        private readonly double _z;
 
         public List<TestEdge> OutEdges
         {
@@ -46,15 +46,15 @@ namespace UnitTestProject1
 
         public double Heuristic(TestVertex destination)
         {
-            double xd = destination.x - this.x;
-            double yd = destination.y - this.y;
-            double zd = destination.z - this.z;
+            double xd = destination._x - _x;
+            double yd = destination._y - _y;
+            double zd = destination._z - _z;
             return Math.Sqrt(xd*xd + yd*yd + zd*zd);
         }
 
         public override string ToString()
         {
-            return String.Format("{0:0.0},{1:0.0},{2:0.0}", x, y, z);
+            return String.Format("{0:0.0},{1:0.0},{2:0.0}", _x, _y, _z);
         }
     }
 }

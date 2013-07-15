@@ -1,6 +1,5 @@
 ﻿using Alastri.SpryGraph;
 using NUnit.Framework;
-using QuickGraph;
 
 
 namespace UnitTestProject1
@@ -14,7 +13,7 @@ namespace UnitTestProject1
         [Test]
         public void TestMethod1()
         {
-            IImplicitCostedHeuristicGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
+            IMinimalPathFindingGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
 
             var gr = new GraphReader<TestVertex, TestEdge>(graph);
 
@@ -58,7 +57,7 @@ namespace UnitTestProject1
         [Test]
         public void TestMethod2AStar()
         {
-            IImplicitCostedHeuristicGraph<TestVertex, TestEdge> graph = new TestGraph(null, null);
+            IMinimalPathFindingGraph<TestVertex, TestEdge> graph = new TestGraph(null, null);
 
             var gr = new GraphReader<TestVertex, TestEdge>(graph);
 
@@ -102,7 +101,7 @@ namespace UnitTestProject1
         [Test]
         public void SourceIsDest()
         {
-            IImplicitCostedHeuristicGraph<TestVertex, TestEdge> graph = new TestGraph(null,null);
+            IMinimalPathFindingGraph<TestVertex, TestEdge> graph = new TestGraph(null, null);
 
             var gr = new GraphReader<TestVertex, TestEdge>(graph);
 

@@ -50,16 +50,9 @@ namespace Alastri.DataStructures
     {
         private struct Entry
         {
-            public Entry(double key, TValue value, int index)
-            {
-                Key = key;
-                Value = value;
-                Index = index;
-            }
-
             public double Key;
-            public TValue Value;
-            public int Index;
+            public readonly TValue Value;
+            public readonly int Index;
 
             public Entry(TValue value, int i)
             {
@@ -71,7 +64,7 @@ namespace Alastri.DataStructures
 
         private Entry[] _heap;
         private int _count;
-        private int _index = 0;
+        private int _index;
         private int[] _indices;
 
 
@@ -215,14 +208,12 @@ namespace Alastri.DataStructures
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Add(double key, TValue value)
         {
-            int index;
-            int heapIndex;
             if (_count == _heap.Length)
                 ExpandHeap();
             if (_index == _indices.Length)
                 ExpandIndices();
-            heapIndex = _count++;
-            index = _index++;
+            int heapIndex = _count++;
+            int index = _index++;
             _heap[heapIndex] = new Entry(value, index);
             _indices[index] = heapIndex;
             DecreateKeyInternal(key, heapIndex);
@@ -288,9 +279,7 @@ namespace Alastri.DataStructures
                     _current = _heap._heap[_index].Value;
                     return true;
                 }
-                else
-                    return false;
-
+                return false;
             }
 
             public void Reset()

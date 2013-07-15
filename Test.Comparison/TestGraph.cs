@@ -5,7 +5,7 @@ namespace UnitTestProject1
 {
     public class TestGraph : IHybridGraph
     {
-        private IList<TestVertex> _vertices;
+        private readonly IList<TestVertex> _vertices;
         private readonly IList<TestEdge> _edges;
 
         public TestGraph(IList<TestVertex> vertexList, IList<TestEdge> edges )
