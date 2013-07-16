@@ -29,9 +29,9 @@ namespace Alastri.SpryGraph
                 var v = kvp.Value;
                 var cost = kvp.Key;
 
-                if (v == destVertex) //terminate
+                if (cost >= Costs[destVertex.Id]) //terminate
                 {
-                    Unvisited.Add(kvp);                                     
+                    Unvisited.Add(kvp);
                     break;
                 }
 

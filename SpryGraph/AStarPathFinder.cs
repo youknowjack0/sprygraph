@@ -42,17 +42,19 @@ namespace Alastri.SpryGraph
             while (Unvisited.Count > 0)
             {
                 var kvp = Unvisited.RemoveMinimum();
-                var v = kvp.Value;                
+                var v = kvp.Value;
 
-                if (v == destVertex) //terminate
+                var cost = Costs[v.Id]; //it MAY be more efficient to embed the path cost in the heap item
+
+                if (cost >= Costs[destVertex.Id]) //terminate
                 {
-                    Unvisited.Add(kvp);                                     
+                    Unvisited.Add(kvp);
                     break;
                 }
 
                 HeapIndex[v.Id] = -1;
 
-                var cost = Costs[v.Id]; //it MAY be more efficient to embed the path cost in the heap item
+                
 
                 foreach (var edge in v.GetOutEdges(Graph))
                 {
