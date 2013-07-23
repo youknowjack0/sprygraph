@@ -64,9 +64,10 @@ namespace Alastri.SpryGraph
         {
             if (Graph.VertexCount >= Costs.Length)
             {
-                Array.Resize(ref Costs, Costs.Length*2);
-                Array.Resize(ref HeapIndex, HeapIndex.Length * 2);
-                Array.Resize(ref Precedent, Precedent.Length * 2);
+                int newSize = Math.Max(Costs.Length*2, Graph.VertexCount);
+                Array.Resize(ref Costs, newSize);
+                Array.Resize(ref HeapIndex, newSize);
+                Array.Resize(ref Precedent, newSize);
             }
         }
 
