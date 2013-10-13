@@ -7,11 +7,9 @@ Currently has:
 - Fast A*
 - Fast Dijkstra
 
-State: Alpha
+Development state: I use this library in production software.
 
 For a brief tutorial see <a href="http://jacklangman.com/2013/07/15/faster-path-finding-in-csharp/">http://jacklangman.com/2013/07/15/faster-path-finding-in-csharp/</a>
-
-If you're looking for a production library, have a look at <a href="http://quickgraph.codeplex.com/">QuickGraph</a>.
 
 ==========
 
