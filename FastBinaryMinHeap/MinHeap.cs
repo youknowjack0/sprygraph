@@ -36,10 +36,12 @@ using System.Runtime.CompilerServices;
 namespace Alastri.DataStructures
 {
     /// <summary>
-    /// A minimalistic keyed binary minheap with natural double key comparison only
-    /// 
-    /// not particularly useful as a general purpose data structure
-    /// 
+    /// A minimalistic keyed binary minheap with natural double key comparison only <br />
+    /// <br />
+    /// not particularly useful as a general purpose data structure<br />
+    /// <br />
+    /// the motivation for not having generic key type is to allow the jit to generate native in-lined code for key comparisons <br />
+    /// <br />
     /// Duplicate keys are allowed
     /// 
     /// adding an item returns an integer index which can be used to retrieve or decrease-key 
