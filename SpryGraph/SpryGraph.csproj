@@ -107,7 +107,6 @@
     <Content Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="SpryGraph.snk" />
   </ItemGroup>
   <ItemGroup>
