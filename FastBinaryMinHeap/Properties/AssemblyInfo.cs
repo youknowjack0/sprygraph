@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Alastri.MinHeap")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Alastri Software Pty Ltd")]
 [assembly: AssemblyProduct("Fast Binary Min Heap")]
-[assembly: AssemblyCopyright("Copyright © Alastri Software Pty. Ltd. 2013")]
+[assembly: AssemblyCopyright("Copyright © Alastri Software Pty Ltd 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

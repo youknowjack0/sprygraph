@@ -303,5 +303,25 @@ namespace Alastri.DataStructures
                 get { return Current; }
             }
         }
+
+        public void Remove(int index)
+        {
+            int hi = _indices[index];
+
+#if DEBUG
+            _indices[index] = -1;
+#endif
+
+            if (_count == 1)
+            {
+                _count = 0;
+            }
+            else
+            {
+                Move(--_count, hi);
+                MinHeapify(hi);
+            }
+        }
+
     }
 }
